@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\aleks\source\repos\OrderManager\OrderManagerUserInterface\App.xaml
-8-659553304
+111874473583
 
-12-1561437939
+15-1228837335
 14-1220093428
-Add\AddOrder.xaml;Add\AddPerson.xaml;Add\AddProduct.xaml;MainWindow.xaml;Show\ShowCustomers.xaml;Show\ShowEmployees.xaml;Show\ShowOrders.xaml;Show\ShowProducts.xaml;
+Add\AddOrder.xaml;Add\AddPerson.xaml;Add\AddProduct.xaml;Edit\EditOrder.xaml;Edit\EditPerson.xaml;Edit\EditProduct.xaml;MainWindow.xaml;Show\ShowCustomers.xaml;Show\ShowEmployees.xaml;Show\ShowOrders.xaml;Show\ShowProducts.xaml;
 
 True
 

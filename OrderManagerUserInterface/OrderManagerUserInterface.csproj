@@ -68,6 +68,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Edit\EditOrder.xaml.cs">
+      <DependentUpon>EditOrder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Edit\EditPerson.xaml.cs">
+      <DependentUpon>EditPerson.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Edit\EditProduct.xaml.cs">
+      <DependentUpon>EditProduct.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Show\ShowCustomers.xaml.cs">
       <DependentUpon>ShowCustomers.xaml</DependentUpon>
     </Compile>
@@ -120,6 +129,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Add\AddProduct.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Edit\EditOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Edit\EditPerson.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Edit\EditProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
