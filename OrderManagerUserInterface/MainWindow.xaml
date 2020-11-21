@@ -1,12 +1,84 @@
-﻿<Window x:Class="OrderManagerUserInterface.MainWindow"
+﻿<Window x:Class="MD2.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OrderManagerUserInterface"
+        xmlns:local="clr-namespace:MD2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="530" Width="800">
+
+    <Border Padding="20">
+        <StackPanel>
+
+            <Label HorizontalAlignment="Center" FontSize="25" FontWeight="Heavy">Show information</Label>
+
+            <!-- Show buttons -->
+            <Grid Height="40" Margin="0 15 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Show employees" Margin="10 0 10 0" Click="ShowEmployees_OnClick"/>
+                <Button Grid.Column="1" Content="Show customers" Margin="10 0 10 0" Click="ShowCustomers_OnClick"/>
+                <Button Grid.Column="2" Content="Show products" Margin="10 0 10 0" Click="ShowProducts_OnClick"/>
+                <Button Grid.Column="3" Content="Show orders" Margin="10 0 10 0" Click="ShowOrders_OnClick"/>
+            </Grid>
+
+            <Label HorizontalAlignment="Center" FontSize="25" FontWeight="Heavy" Margin="0 15 0 0">Add information</Label>
+
+            <!-- Add buttons -->
+            <Grid Height="40" Margin="0 15 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Add employees" Margin="10 0 10 0" Click="AddEmployees_OnClick"/>
+                <Button Grid.Column="1" Content="Add customers" Margin="10 0 10 0" Click="AddCustomer_OnClick"/>
+                <Button Grid.Column="2" Content="Add products" Margin="10 0 10 0" Click="AddProduct_OnClick"/>
+                <Button Grid.Column="3" Content="Add orders" Margin="10 0 10 0" Click="AddOrders_OnClick"/>
+            </Grid>
+
+            <Label HorizontalAlignment="Center" FontSize="25" FontWeight="Heavy" Margin="0 15 0 0">Edit information</Label>
+
+            <!--Edit  buttons -->
+            <Grid Height="40" Margin="0 15 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Edit employees" Margin="10 0 10 0" Click="EditEmployee_OnClick"/>
+                <Button Grid.Column="1" Content="Edit customers" Margin="10 0 10 0" Click="EditCustomer_OnClick"/>
+                <Button Grid.Column="2" Content="Edit products" Margin="10 0 10 0" Click="EditProduct_OnClick"/>
+                <Button Grid.Column="3" Content="Edit orders" Margin="10 0 10 0" Click="EditOrders_OnClick"/>
+            </Grid>
+
+
+            <Label HorizontalAlignment="Center" FontSize="25" FontWeight="Heavy" Margin="0 15 0 0">Delete information</Label>
+            <!-- Delete buttons -->
+            <Grid Height="40" Margin="0 15 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Delete employees" Margin="10 0 10 0" Click="DeleteEmployee_OnClick"/>
+                <Button Grid.Column="1" Content="Delete customers" Margin="10 0 10 0" Click="DeleteCustomer_OnClick"/>
+                <Button Grid.Column="2" Content="Delete products" Margin="10 0 10 0" Click="DeleteProduct_OnClick"/>
+                <Button Grid.Column="3" Content="Delete orders" Margin="10 0 10 0" Click="DeleteOrders_OnClick"/>
+            </Grid>
+
+        </StackPanel>
+    </Border>
+
 </Window>
