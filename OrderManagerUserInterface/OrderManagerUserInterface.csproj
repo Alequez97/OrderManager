@@ -68,6 +68,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Delete\DeleteOrder.xaml.cs">
+      <DependentUpon>DeleteOrder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Delete\DeletePerson.xaml.cs">
+      <DependentUpon>DeletePerson.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Delete\DeleteProduct.xaml.cs">
+      <DependentUpon>DeleteProduct.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Edit\EditOrder.xaml.cs">
       <DependentUpon>EditOrder.xaml</DependentUpon>
     </Compile>
@@ -129,6 +138,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Add\AddProduct.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Delete\DeleteOrder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Delete\DeletePerson.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Delete\DeleteProduct.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
