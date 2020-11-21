@@ -68,6 +68,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Show\ShowCustomers.xaml.cs">
+      <DependentUpon>ShowCustomers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Show\ShowEmployees.xaml.cs">
+      <DependentUpon>ShowEmployees.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Show\ShowOrders.xaml.cs">
+      <DependentUpon>ShowOrders.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Show\ShowProducts.xaml.cs">
+      <DependentUpon>ShowProducts.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow.xaml.cs">
@@ -112,6 +124,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Show\ShowCustomers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Show\ShowEmployees.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Show\ShowOrders.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Show\ShowProducts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
