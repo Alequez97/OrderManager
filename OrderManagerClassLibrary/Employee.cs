@@ -25,9 +25,11 @@ namespace OrderManagerClassLibrary
 
         }
 
+        public DateTime AgreementDate { get; set; }
+        public string AgreementNr { get; set; }
 
-        public DateTime AgreementDate { get; }
-        public string AgreementNr { get; }
+        public ICollection<Order> Orders { get; set; }
+
 
         public override string ToString()
         {

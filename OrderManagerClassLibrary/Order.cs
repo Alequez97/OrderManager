@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +20,7 @@ namespace OrderManagerClassLibrary
             _orderDate = DateTime.Now;
             Number = RandomStringGenerator(10);
             _details = new List<OrderDetail>();
-            State = State.New;
+            State = StateEnum.New;
         }
 
         public Order(Customer customer, Employee responsibleEmployee, DateTime dateTime)
@@ -27,10 +29,11 @@ namespace OrderManagerClassLibrary
             ResponsibleEmployee = responsibleEmployee;
             _orderDate = dateTime;
             Number = RandomStringGenerator(10);
-            State = State.New;
+            State = StateEnum.New;
             _details = new List<OrderDetail>();
         }
 
+        [Key]
         public string Number { get; private set; }
 
         public DateTime OrderDate
@@ -39,23 +42,23 @@ namespace OrderManagerClassLibrary
             set => _orderDate = value;
         }
 
-        public State State { get; set; }
+        public StateEnum State { get; set; }
 
         public Customer Customer { get; set; }
 
         public Employee ResponsibleEmployee { get; set; }
 
-        public List<OrderDetail> Details
+        public ICollection<OrderDetail> OrderDetails
         {
             get => _details;
-            set => _details = value;
+            set => _details = (List<OrderDetail>) value;
         }
 
-        public void addProduct(string name, int amount)
+        public void AddProduct(string name, int amount)
         {
 
             var check = false;
-            foreach (var detail in Details)
+            foreach (var detail in OrderDetails)
             {
                 if (detail.Product.Name.Equals(name))
                 {
@@ -68,7 +71,7 @@ namespace OrderManagerClassLibrary
             {
 
 
-                ApplicationManager applicationManager = ApplicationManager.Instance();
+                var applicationManager = ApplicationManager.Instance();
 
                 bool containsProduct = false;
                 foreach (Product product in applicationManager.getProducts())
@@ -78,7 +81,7 @@ namespace OrderManagerClassLibrary
                         OrderDetail newOrderDetail = new OrderDetail();
                         newOrderDetail.Product = product;
                         newOrderDetail.Amount = amount;
-                        Details.Add(newOrderDetail);
+                        OrderDetails.Add(newOrderDetail);
                         containsProduct = true;
                     }
                 }
@@ -97,18 +100,18 @@ namespace OrderManagerClassLibrary
         {
             return $"****************************************************************************\n" +
                 $"Order number: {Number}, Order date: {OrderDate}, Order state: {State}" +
-                $"\nOrder details:\n" + orderDetailsStringCreator() +
+                $"\nOrder details:\n" + OrderDetailsStringCreator() +
                 $"\nCustomer information: \n{Customer.ToString()}" +
                 $"\nResponsible employee information: \n{ResponsibleEmployee.ToString()}" +
                 $"\n****************************************************************************";
         }
 
-        private string orderDetailsStringCreator()
+        private string OrderDetailsStringCreator()
         {
             string allDetailsInCurrentOrder = "";
             int index = 0;
             decimal totalSum = 0;
-            foreach (OrderDetail detail in Details)
+            foreach (OrderDetail detail in OrderDetails)
             {
                 index++;
                 allDetailsInCurrentOrder += "\tDetail No " + index + ": " + detail.ToString() + "\n";

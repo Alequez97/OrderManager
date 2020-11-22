@@ -30,11 +30,11 @@ namespace OrderManagerClassLibrary.Interfaces
 
         public Dictionary<int, string> EditProduct(string newName, decimal newPrice, int indexInCollection);
 
-        public Dictionary<int, string> EditOrder(Employee newEmployee, State newState, int editOrderIndex);
+        public Dictionary<int, string> EditOrder(Employee newEmployee, StateEnum newState, int editOrderIndex);
 
-        public Dictionary<int, string> DeleteEmployee(int index);
-        public Dictionary<int, string> DeleteCustomer(int index);
-        public Dictionary<int, string> DeleteProduct(int index);
+        public Dictionary<int, string> DeleteEmployee(Employee employee);
+        public Dictionary<int, string> DeleteCustomer(Customer customer);
+        public Dictionary<int, string> DeleteProduct(Product product);
         public Dictionary<int, string> DeleteOrder(Order order);
     }
 }

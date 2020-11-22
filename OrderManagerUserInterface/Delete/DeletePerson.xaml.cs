@@ -44,11 +44,11 @@ namespace OrderManagerUserInterface.Delete
             Dictionary<int, string> response;
             if (person is Employee)
             {
-                response = applicationManager.DeleteEmployee(deleteIndex);
+                response = applicationManager.DeleteEmployee(persons.ElementAt(deleteIndex) as Employee);
             }
             else
             {
-                response = applicationManager.DeleteCustomer(deleteIndex);
+                response = applicationManager.DeleteCustomer(persons.ElementAt(deleteIndex) as Customer);
             }
 
             FillPersonsListAndComboBoxWithNames();

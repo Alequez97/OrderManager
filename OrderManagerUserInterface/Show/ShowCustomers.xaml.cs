@@ -93,9 +93,9 @@ namespace OrderManagerUserInterface.Show
 
                 int rowIndex = 1;
                 List<TextBox> newTextBoxes;
-                var rowDef = new RowDefinition();
                 foreach (var customer in customers)
                 {
+                    var rowDef = new RowDefinition();
                     rowDef.Height = new GridLength(30);
                     grid.RowDefinitions.Add(rowDef);
 

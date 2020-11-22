@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderManagerClassLibrary
 {
-    public enum State
+    public enum StateEnum
     {
         New,
         Completed,

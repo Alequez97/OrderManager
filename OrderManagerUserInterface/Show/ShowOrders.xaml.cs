@@ -11,27 +11,15 @@ namespace OrderManagerUserInterface.Show
     /// </summary>
     public partial class ShowOrders : Window
     {
-        private List<Order> orders;
         private int controlIndex;
+        private List<Order> orders;
 
         public ShowOrders(List<Order> orders)
         {
-            this.orders = orders;
             InitializeComponent();
             controlIndex = 0;
-            if (orders.Count == 0)
-            {
-                Label label = new Label();
-                label.Content = "No orders added yet!";
-                label.FontSize = 50;
-                label.HorizontalAlignment = HorizontalAlignment.Center;
-                ordersStackPanel.Children.Add(label);
-
-            }
-            else
-            {
-                PrintOrderInformation(controlIndex);
-            }
+            this.orders = orders;
+            PrintOrderInformation(controlIndex);
         }
 
         public void PrintOrderInformation(int index)
@@ -136,7 +124,7 @@ namespace OrderManagerUserInterface.Show
 
             //drawing products grid
             decimal totalSum = 0;
-            foreach (var detail in order.Details)
+            foreach (var detail in order.OrderDetails)
             {
                 var productsGrid = new Grid();
                 colDef1 = new ColumnDefinition();

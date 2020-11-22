@@ -22,5 +22,7 @@ namespace OrderManagerClassLibrary
             Email = email;
         }
 
+        public virtual ICollection<Order> Orders { get; set; }
+
     }
 }

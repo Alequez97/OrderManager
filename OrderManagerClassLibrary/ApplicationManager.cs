@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net.Mail;
 using OrderManagerClassLibrary.Interfaces;
@@ -9,25 +10,24 @@ namespace OrderManagerClassLibrary
     public class ApplicationManager : IApplicationManager
     {
         private static ApplicationManager applicationManager;
+        private static OrderManagerDbContext context;
 
-        private DataManager dataManager;
-
-        private List<Employee> employees;
-        private List<Customer> customers;
-        private List<Product> products;
-        private List<Order> orders;
+        public static ApplicationManager Instance()
+        {
+            if (applicationManager == null)
+            {
+                applicationManager = new ApplicationManager();
+                context = new OrderManagerDbContext();
+            }
+            return applicationManager;
+        }
 
         public List<Employee> Employees
         {
             get
             {
-                dataManager = DataManager.Instance();
-                dataManager.Load();
+                var employees = context.Employees.Select(x => x).ToList();
                 return employees;
-            }
-            set
-            {
-                employees = value;
             }
         }
 
@@ -35,13 +35,8 @@ namespace OrderManagerClassLibrary
         {
             get
             {
-                dataManager = DataManager.Instance();
-                dataManager.Load();
+                var customers = context.Customers.Select(x => x).ToList();
                 return customers;
-            }
-            set
-            {
-                customers = value;
             }
         }
 
@@ -49,13 +44,9 @@ namespace OrderManagerClassLibrary
         {
             get
             {
-                dataManager = DataManager.Instance();
-                dataManager.Load();
+
+                var products = context.Products.Select(x => x).ToList();
                 return products;
-            }
-            set
-            {
-                products = value;
             }
         }
 
@@ -63,42 +54,29 @@ namespace OrderManagerClassLibrary
         {
             get
             {
-                dataManager = DataManager.Instance();
-                dataManager.Load();
+                var orders = context.Orders.Select(x => x).ToList();
                 return orders;
-            }
-            set
-            {
-                orders = value;
             }
         }
 
-        public static ApplicationManager Instance()     
-        {
-            if (applicationManager == null)
-            {
-                applicationManager = new ApplicationManager();
-            }
-            return applicationManager;
-        }
 
         private ApplicationManager()
         {
-            employees = new List<Employee>();
-            customers = new List<Customer>();
-            products = new List<Product>();
-            orders = new List<Order>();
+
         }
 
         public Dictionary<int, string> AddCustomer(string name, string surname, string personalCode, string email)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
             Dictionary<int, string> response = new Dictionary<int, string>();
 
+            List<Customer> customers;
+            using (var context = new OrderManagerDbContext())
+            {
+                customers = context.Customers.Select(x => x).ToList();
+            }
+
             bool contains = false;
-            foreach (Customer customer in customers)                      //check if collection of customers contains object 
+            foreach (var customer in customers)                      //check if collection of customers contains object 
             {                                                            //with user typed personal code
                 if (customer.PersonalCode.Equals(personalCode)) contains = true;
             }
@@ -109,13 +87,16 @@ namespace OrderManagerClassLibrary
                 response.Add(0, "Customer with this personal code already exists");
                 return response;
             }
-            else                                                        //if not, create new customer and add to colection
+            else                                                        //if not, create new customer and add to collection
             {
                 try
                 {
                     var address = new MailAddress(email);
-                    customers.Add(new Customer(name, surname, personalCode, email));
-                    dataManager.saveCustomers(ref customers);
+
+                    var customer = new Customer(name, surname, personalCode, email);
+                    context.Customers.Add(customer);
+                    context.SaveChanges();
+
                     response.Add(1, "Customer successfully added");
                     return response;
 
@@ -126,6 +107,17 @@ namespace OrderManagerClassLibrary
                     response.Add(0, "Email address is invalid");
                     return response;
                 }
+                catch (DbUpdateException)
+                {
+                    Console.WriteLine("Email address is invalid. Try again");
+                    response.Add(0, "Error occurred when saving data in database");
+                    return response;
+                }
+                catch (Exception)
+                {
+                    response.Add(0, "Error occurred. Try again later");
+                    return response;
+                }
 
             }
 
@@ -133,13 +125,11 @@ namespace OrderManagerClassLibrary
 
         public Dictionary<int, string> AddEmployee(string name, string surname, string personalCode, string email)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
 
             Dictionary<int, string> response = new Dictionary<int, string>();
 
             bool contains = false;
-            foreach (Employee employee in employees)        //check if collection of employees contains object 
+            foreach (Employee employee in getEmployees())        //check if collection of employees contains object 
             {                                               //with user typed personal code
                 if (employee.PersonalCode.Equals(personalCode)) contains = true;
             }
@@ -155,16 +145,29 @@ namespace OrderManagerClassLibrary
                 try
                 {
                     var address = new MailAddress(email);
-                    Employees.Add(new Employee(name, surname, personalCode, email));
-                    dataManager.saveEmployees(ref employees);
+
+                    var employee = new Employee(name, surname, personalCode, email);
+                    context.Employees.Add(employee);
+                    context.SaveChanges();
 
                     response.Add(1, "Employee successfully added");
                     return response;
                 }
-                catch (Exception)
+                catch (FormatException)
                 {
                     Console.WriteLine("Email address is invalid. Try again");
-                    response.Add(0, "Invalid e-mail address");
+                    response.Add(0, "Email address is invalid");
+                    return response;
+                }
+                catch (DbUpdateException)
+                {
+                    Console.WriteLine("Email address is invalid. Try again");
+                    response.Add(0, "Error occurred when saving data in database");
+                    return response;
+                }
+                catch (Exception)
+                {
+                    response.Add(0, "Error occurred. Try again later");
                     return response;
                 }
 
@@ -174,35 +177,45 @@ namespace OrderManagerClassLibrary
 
         public Dictionary<int, string> AddOrder(Customer customer, Employee employee, Dictionary<Product, int> orderBasket)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
 
             var order = new Order(customer, employee, DateTime.Now);
 
             foreach (var orderBasketElement in orderBasket)
             {
-                order.addProduct(orderBasketElement.Key.Name, orderBasketElement.Value);
+                order.AddProduct(orderBasketElement.Key.Name, orderBasketElement.Value);
             }
 
-            orders.Add(order);
-            dataManager.saveOrders(ref orders);
-            var response = new Dictionary<int, string> { { 1, "Order successfully created" } };
-            return response;
+            try
+            {
+                context.Orders.Add(order);
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    context.OrderDetails.Add(orderDetail);
+                }
+                context.SaveChanges();
+
+                var response = new Dictionary<int, string> { { 1, "Order successfully created" } };
+                return response;
+            }
+            catch (Exception e)
+            {
+                var response = new Dictionary<int, string> { { 0, "Order can't be added. Try again later" } };
+                return response;
+            }
+
+            
         }
 
         public Dictionary<int, string> AddProduct(string productName, decimal price)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
 
             Dictionary<int, string> response = new Dictionary<int, string>();
 
-            foreach (Product product in products)     //check if collection contains object with user typed product name
+            foreach (Product product in getProducts())     //check if collection contains object with user typed product name
             {
                 if (product.Name.ToLower().Equals(productName.ToLower()))
                 {
                     product.Price = price;
-                    dataManager.saveProducts(ref products);
                     response.Add(1, "Product " + productName + " already was in stock. Price was changed");
                     return response;
                 }
@@ -213,50 +226,63 @@ namespace OrderManagerClassLibrary
             productName = productName.ToLower();
             char firstLetterUpper = char.ToUpper(productName[0]);
             productName = firstLetterUpper + productName.Substring(1);
-            products.Add(new Product(productName, price));
-            dataManager.saveProducts(ref products);
-            response.Add(1, "Product successfully added");
-            return response;
+
+            try
+            {
+                var newProduct = new Product(productName, price);
+                context.Products.Add(newProduct);
+                context.SaveChanges();
+                response.Add(1, "Product successfully added");
+                return response;
+            }
+            catch
+            {
+                response.Add(0, "Can't save product");
+                return response;
+            }
         }
 
         public List<Employee> getEmployees()
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
+
+            var employees = context.Employees.Select(x => x).ToList();
+
             return employees;
         }
 
         public List<Product> getProducts()
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
+            var products = context.Products.Select(x => x).ToList();
             return products;
         }
 
         public List<Customer> getCustomers()
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
+            var customers = context.Customers.Select(x => x).ToList();
             return customers;
         }
 
         public List<Order> getOrders()
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
+            var orders = context.Orders.Select(x => x).ToList();
             return orders;
+        }
+
+        public List<OrderDetail> GetOrderDetails()
+        {
+            var orderDetails = context.OrderDetails.Select(x => x).ToList();
+            return orderDetails;
         }
 
         public Dictionary<int, string> EditCustomer(string newName, string newSurname, string newEmail, string newPersonalCode, string oldPersonalCode, int indexInCollection)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
 
             if (!IsValidEmail(newEmail))
             {
                 return new Dictionary<int, string> { { 0, "Error. Wrong e-mail format" } };
             }
 
+            var customers = getCustomers();
             var customer = customers.ElementAt(indexInCollection);
 
             if (customer.Name.Equals(newName) && customer.Surname.Equals(newSurname) &&
@@ -266,7 +292,7 @@ namespace OrderManagerClassLibrary
             }
 
             int controlIndex = 0;
-            foreach (Customer c in customers)        //check if collection of employees contains object 
+            foreach (Customer c in getCustomers())        //check if collection of employees contains object 
             {                                               //with user typed personal code
                 if (controlIndex != indexInCollection)
                 {
@@ -281,6 +307,7 @@ namespace OrderManagerClassLibrary
             customers[indexInCollection].PersonalCode = newPersonalCode;
 
             int orderIndex = 0;
+            var orders = getOrders();
             foreach (var order in orders)
             {
                 if (order.Customer.PersonalCode.Equals(oldPersonalCode))
@@ -293,21 +320,26 @@ namespace OrderManagerClassLibrary
 
                 orderIndex++;
             }
-            dataManager.saveCustomers(ref customers);
-            dataManager.saveOrders(ref orders);
-            return new Dictionary<int, string>() { { 1, "Customer was successfully modified" } };
+
+            try
+            {
+                context.SaveChanges();
+                return new Dictionary<int, string>() { { 1, "Customer was successfully modified" } };
+            }
+            catch (Exception)
+            {
+                return new Dictionary<int, string> { { 0, "Unable to edit customer. Try again later" } };
+            }
 
         }
         public Dictionary<int, string> EditEmployee(string newName, string newSurname, string newEmail, string newPersonalCode, string oldPersonalCode, int indexInCollection)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
             if (!IsValidEmail(newEmail))
             {
                 return new Dictionary<int, string> { { 0, "Error. Wrong e-mail format" } };
             }
 
+            var employees = getEmployees();
             var employee = employees.ElementAt(indexInCollection);
 
             if (employee.Name.Equals(newName) && employee.Surname.Equals(newSurname) &&
@@ -317,7 +349,7 @@ namespace OrderManagerClassLibrary
             }
 
             int controlIndex = 0;
-            foreach (Employee e in employees)        //check if collection of employees contains object 
+            foreach (Employee e in getEmployees())        //check if collection of employees contains object 
             {                                               //with user typed personal code
                 if (controlIndex != indexInCollection)
                 {
@@ -332,6 +364,7 @@ namespace OrderManagerClassLibrary
             employees[indexInCollection].PersonalCode = newPersonalCode;
 
             int orderIndex = 0;
+            var orders = getOrders();
             foreach (var order in orders)
             {
                 if (order.ResponsibleEmployee.PersonalCode.Equals(oldPersonalCode))
@@ -344,18 +377,23 @@ namespace OrderManagerClassLibrary
 
                 orderIndex++;
             }
-            dataManager.saveEmployees(ref employees);
-            dataManager.saveOrders(ref orders);
-            return new Dictionary<int, string>() { { 1, "Employee was successfully modified" } };
+            try
+            {
+                context.SaveChanges();
+                return new Dictionary<int, string>() { { 1, "Employee was successfully modified" } };
+            }
+            catch (Exception)
+            {
+                return new Dictionary<int, string> { { 0, "Unable to edit employee. Try again later" } };
+            }
 
         }
 
         public Dictionary<int, string> EditProduct(string newName, decimal newPrice, int index)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
             int controlIndex = 0;
+            var products = getProducts();
+
             foreach (var product in products)
             {
                 if (controlIndex != index)
@@ -370,64 +408,79 @@ namespace OrderManagerClassLibrary
             products[index].Name = newName;
             products[index].Price = newPrice;
 
-            dataManager.saveProducts(ref products);
-            return new Dictionary<int, string> { { 1, "Product successfully edited" } };
+            try
+            {
+                context.SaveChanges();
+                return new Dictionary<int, string> { { 1, "Product successfully edited" } };
+            }
+            catch (Exception)
+            {
+                return new Dictionary<int, string> { { 0, "Unable to edit product. Try again later" } };
+            }
         }
 
-        public Dictionary<int, string> EditOrder(Employee newEmployee, State newState, int editOrderIndex)
+        public Dictionary<int, string> EditOrder(Employee newEmployee, StateEnum newState, int editOrderIndex)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
+            var orders = getOrders();
             orders[editOrderIndex].ResponsibleEmployee = newEmployee;
             orders[editOrderIndex].State = newState;
-            dataManager.saveOrders(ref orders);
             return new Dictionary<int, string> { { 1, "Order successfully edited" } };
         }
 
-        public Dictionary<int, string> DeleteEmployee(int index)
+        public Dictionary<int, string> DeleteEmployee(Employee employee)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
-            employees.RemoveAt(index);
-            dataManager.saveEmployees(ref employees);
-
-            return new Dictionary<int, string> { { 1, "Employee deleted" } };
+            try
+            {
+                context.Employees.Remove(employee);
+                context.SaveChanges();
+                return new Dictionary<int, string> { { 1, "Employee deleted" } };
+            }
+            catch
+            {
+                return new Dictionary<int, string> { { 0, "Unable to delete employee" } };
+            }
         }
 
-        public Dictionary<int, string> DeleteCustomer(int index)
+        public Dictionary<int, string> DeleteCustomer(Customer customer)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
-            customers.RemoveAt(index);
-            dataManager.saveCustomers(ref customers);
-
-            return new Dictionary<int, string> { { 1, "Customer deleted" } };
+            try
+            {
+                context.Customers.Remove(customer);
+                context.SaveChanges();
+                return new Dictionary<int, string> { { 1, "Customer deleted" } };
+            }
+            catch
+            {
+                return new Dictionary<int, string> { { 0, "Unable to delete customer" } };
+            }
         }
 
-        public Dictionary<int, string> DeleteProduct(int index)
+        public Dictionary<int, string> DeleteProduct(Product product)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
-            products.RemoveAt(index);
-            dataManager.saveProducts(ref products);
-
-            return new Dictionary<int, string> { { 1, "Product deleted" } };
+            try
+            {
+                context.Products.Remove(product);
+                context.SaveChanges();
+                return new Dictionary<int, string> { { 1, "Product deleted" } };
+            }
+            catch
+            {
+                return new Dictionary<int, string> { { 0, "Unable to delete product" } };
+            }
         }
 
         public Dictionary<int, string> DeleteOrder(Order order)
         {
-            dataManager = DataManager.Instance();
-            dataManager.Load();
-
-
-            orders.Remove(order);
-            dataManager.saveOrders(ref orders);
-
-            return new Dictionary<int, string> { { 1, "Order deleted" } };
+            try
+            {
+                context.Orders.Remove(order);
+                context.SaveChanges();
+                return new Dictionary<int, string> { { 1, "Order deleted" } };
+            }
+            catch
+            {
+                return new Dictionary<int, string> { { 0, "Unable to delete order" } };
+            }
         }
 
         bool IsValidEmail(string email) //https://stackoverflow.com/questions/1365407/c-sharp-code-to-validate-email-address

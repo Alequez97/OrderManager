@@ -21,9 +21,13 @@ namespace OrderManagerClassLibrary
             Price = price;
         }
 
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public decimal Price { get; set; }
+
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
         public override string ToString()
         {

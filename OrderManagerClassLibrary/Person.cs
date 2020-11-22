@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net.Mail;
 
 namespace OrderManagerClassLibrary
@@ -21,12 +23,15 @@ namespace OrderManagerClassLibrary
             get => _surname;
             set => _surname = value;
         }
+
+        [Key]
         public string PersonalCode
         {
             get => _personalCode;
             set => _personalCode = value;
         }
 
+        [NotMapped]
         public string FullName => _name + " " + _surname;
 
         public string Email
@@ -34,24 +39,26 @@ namespace OrderManagerClassLibrary
             get => _email;
             set
             {
-                try
-                {
-                    var address = new MailAddress(value);
-                    var isValid = (address.Address == value);
-                    if (isValid)
-                    {
-                        _email = value;
-                    }
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("Email address is invalid");
-                }
+                if (IsValidEmail(value)) _email = value;
             }
         }
+
         public override string ToString()
         {
             return "\tfull name: " + FullName + "\n\tpersonal code: " + PersonalCode + "\n\te-mail: " + Email;
+        }
+
+        bool IsValidEmail(string email) //https://stackoverflow.com/questions/1365407/c-sharp-code-to-validate-email-address
+        {
+            try
+            {
+                var addr = new MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

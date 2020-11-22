@@ -13,15 +13,15 @@ namespace OrderManagerUserInterface.Delete
     public partial class DeleteProduct : Window
     {
 
-        private ApplicationManager applicationManager;
-        private List<Product> products;
+        private readonly ApplicationManager _applicationManager;
+        private List<Product> _products;
 
         public DeleteProduct()
         {
             InitializeComponent();
 
-            applicationManager = ApplicationManager.Instance();
-            products = applicationManager.getProducts();
+            _applicationManager = ApplicationManager.Instance();
+            _products = _applicationManager.getProducts();
 
             FillComboBox();
         }
@@ -44,7 +44,7 @@ namespace OrderManagerUserInterface.Delete
                 return;
             }
 
-            var response = applicationManager.DeleteProduct(deleteIndex);
+            var response = _applicationManager.DeleteProduct(_products.ElementAt(deleteIndex));
 
             FillComboBox();
 
@@ -76,10 +76,10 @@ namespace OrderManagerUserInterface.Delete
         private void FillComboBox()
         {
             productComboBox.Items.Clear();
-            products.Clear();
-            products = applicationManager.getProducts();
+            _products.Clear();
+            _products = _applicationManager.getProducts();
 
-            foreach (Product product in products)
+            foreach (Product product in _products)
             {
                 productComboBox.Items.Add(product.Name);
             }

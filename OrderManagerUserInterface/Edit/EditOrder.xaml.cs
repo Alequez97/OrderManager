@@ -44,7 +44,7 @@ namespace OrderManagerUserInterface.Edit
             var employeeSelectedIndex = employeeComboBox.SelectedIndex;
             var stateSelectedIndex = stateComboBox.SelectedIndex;
 
-            var response = applicationManager.EditOrder(employees[employeeSelectedIndex], (State)stateSelectedIndex, orderSelectedIndex);
+            var response = applicationManager.EditOrder(employees[employeeSelectedIndex], (StateEnum)stateSelectedIndex, orderSelectedIndex);
             var responseCode = response.Keys.ElementAt(0);
 
             if (responseCode == 1)
@@ -98,7 +98,7 @@ namespace OrderManagerUserInterface.Edit
                 employeeComboBox.Items.Add(employee.FullName + " (p.c. - " + employee.PersonalCode + ")");
             }
 
-            foreach (var state in Enum.GetValues(typeof(State)))
+            foreach (var state in Enum.GetValues(typeof(StateEnum)))
             {
                 stateComboBox.Items.Add(state);
             }

@@ -1,5 +1,9 @@
 ﻿using System.Windows;
 using OrderManagerClassLibrary;
+using OrderManagerUserInterface.Add;
+using OrderManagerUserInterface.Delete;
+using OrderManagerUserInterface.Edit;
+using OrderManagerUserInterface.Show;
 
 namespace OrderManagerUserInterface
 {
@@ -9,36 +13,41 @@ namespace OrderManagerUserInterface
     public partial class MainWindow : Window
     {
 
-        private ApplicationManager applicationManager;
+        private readonly ApplicationManager _applicationManager;
 
         public MainWindow()
         {
             InitializeComponent();
-            applicationManager = ApplicationManager.Instance();
+            _applicationManager = ApplicationManager.Instance();
         }
 
         #region buttons_that_show_information
         private void ShowEmployees_OnClick(object sender, RoutedEventArgs e)
         {
-            var showEmployees = new ShowEmployees(applicationManager.getEmployees());
+            var showEmployees = new ShowEmployees(_applicationManager.getEmployees());
             showEmployees.Show();
         }
 
         private void ShowCustomers_OnClick(object sender, RoutedEventArgs e)
         {
-            var showCustomers = new ShowCustomers(applicationManager.getCustomers());
+            var showCustomers = new ShowCustomers(_applicationManager.getCustomers());
             showCustomers.Show();
         }
 
         private void ShowProducts_OnClick(object sender, RoutedEventArgs e)
         {
-            var showProducts = new ShowProducts(applicationManager.getProducts());
+            var showProducts = new ShowProducts(_applicationManager.getProducts());
             showProducts.Show();
         }
 
         private void ShowOrders_OnClick(object sender, RoutedEventArgs e)
         {
-            var showOrders = new ShowOrders(applicationManager.getOrders());
+            _applicationManager.getCustomers();
+            _applicationManager.getEmployees();
+            _applicationManager.getProducts();
+            _applicationManager.GetOrderDetails();
+          
+            var showOrders = new ShowOrders(_applicationManager.getOrders());
             showOrders.Show();
         }
 
@@ -65,6 +74,11 @@ namespace OrderManagerUserInterface
 
         private void AddOrders_OnClick(object sender, RoutedEventArgs e)
         {
+            _applicationManager.getCustomers();
+            _applicationManager.getEmployees();
+            _applicationManager.getProducts();
+            _applicationManager.GetOrderDetails();
+
             var addOrderForm = new AddOrder();
             addOrderForm.Show();
         }
@@ -89,6 +103,11 @@ namespace OrderManagerUserInterface
 
         private void EditOrders_OnClick(object sender, RoutedEventArgs e)
         {
+            _applicationManager.getCustomers();
+            _applicationManager.getEmployees();
+            _applicationManager.getProducts();
+            _applicationManager.GetOrderDetails();
+
             var editOrdersForm = new EditOrder();
             editOrdersForm.Show();
         }
@@ -111,6 +130,11 @@ namespace OrderManagerUserInterface
 
         private void DeleteOrders_OnClick(object sender, RoutedEventArgs e)
         {
+            _applicationManager.getCustomers();
+            _applicationManager.getEmployees();
+            _applicationManager.getProducts();
+            _applicationManager.GetOrderDetails();
+
             var deleteOrderForm = new DeleteOrder();
             deleteOrderForm.Show();
         }
