@@ -18,7 +18,7 @@
 
 
 
-        <Grid x:Name ="responseGrid"  HorizontalAlignment="Center" Height="43" Margin="0,240,0,0" VerticalAlignment="Top" Width="350">
+        <Grid x:Name ="responseGrid"  HorizontalAlignment="Center" Height="100" Margin="0,200,0,0" VerticalAlignment="Top" Width="350">
         </Grid>
 
         <Grid HorizontalAlignment="Center" Height="76" VerticalAlignment="Top" Width="400" Margin="0,294,0,0">

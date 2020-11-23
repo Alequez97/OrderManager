@@ -29,10 +29,11 @@ namespace OrderManagerUserInterface.Show
 
         private void PrintInformation()
         {
-            if (employees.Count == 0)
+            if (employees.Count == 0 || employees == null)
             {
                 Label label = new Label();
                 label.Content = "No employee added yet!";
+                label.FontSize = 30;
                 label.HorizontalAlignment = HorizontalAlignment.Center;
                 myStackPanel.Children.Add(label);
             }

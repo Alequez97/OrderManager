@@ -29,7 +29,7 @@
         <Grid HorizontalAlignment="Center" Height="48" Margin="0,180,0,0" VerticalAlignment="Top" Width="400" >
             <Label Content="Personal code" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="36,0,0,0"/>
             <TextBox x:Name ="personalCodeTextBox" HorizontalAlignment="Left" Height="23" Margin="134,0,0,0" Padding="0 2 0 0" TextWrapping="Wrap" VerticalAlignment="Top" Width="220"/>
-            <Label  x:Name="personalCodeLabel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="130,0,0,0"/>
+            <TextBlock  x:Name="personalCodeLabel" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="5 5 0 0" Margin="130,0,0,-12" Height="42" Width="224"/>
         </Grid>
 
         <Grid x:Name ="responseGrid"  HorizontalAlignment="Center" Height="43" Margin="0,246,0,0" VerticalAlignment="Top" Width="350">

@@ -24,13 +24,13 @@ namespace OrderManagerClassLibrary.Interfaces
 
         public List<Order> getOrders();
 
-        public Dictionary<int, string> EditEmployee(string newName, string newSurname, string newEmail, string newPersonalCode, string oldPersonalCode, int indexInCollection);
+        public Dictionary<int, string> EditEmployee(string newName, string newSurname, string newPersonalCode, string oldPersonalCode, int indexInCollection);
 
-        public Dictionary<int, string> EditCustomer(string newName, string newSurname, string newEmail, string newPersonalCode, string oldPersonalCode, int indexInCollection);
+        public Dictionary<int, string> EditCustomer(string newName, string newSurname, string newPersonalCode, string oldPersonalCode, int indexInCollection);
 
         public Dictionary<int, string> EditProduct(string newName, decimal newPrice, int indexInCollection);
 
-        public Dictionary<int, string> EditOrder(Employee newEmployee, StateEnum newState, int editOrderIndex);
+        public Dictionary<int, string> EditOrder(Employee newEmployee, StateEnum newState, Dictionary<Product, int> orderBasket, Order order);
 
         public Dictionary<int, string> DeleteEmployee(Employee employee);
         public Dictionary<int, string> DeleteCustomer(Customer customer);

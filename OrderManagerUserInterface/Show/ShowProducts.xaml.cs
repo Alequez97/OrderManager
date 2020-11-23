@@ -23,10 +23,11 @@ namespace OrderManagerUserInterface.Show
 
         private void PrintInformation()
         {
-            if (products.Count == 0)
+            if (products.Count == 0 || products == null)
             {
                 Label label = new Label();
                 label.Content = "No products added yet!";
+                label.FontSize = 30;
                 label.HorizontalAlignment = HorizontalAlignment.Center;
                 myStackPanel.Children.Add(label);
             }

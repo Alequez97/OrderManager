@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Edit Order" Height="500" Width="600">
+        Title="Edit Order" Height="550" Width="600">
     <StackPanel>
 
         <Grid HorizontalAlignment="Center" Height="45" Margin="0,30,0,0" VerticalAlignment="Top" Width="600" >
@@ -49,6 +49,51 @@
             <Border x:Name="stateComboBoxBorder" Grid.Row="0" Grid.Column="1" BorderBrush="Red" BorderThickness="0" Width="460" HorizontalAlignment="Left" Margin="100 0  0 0">
             </Border>
             <TextBlock Grid.Row="1" x:Name="stateErrorTextBlock" Foreground="Red" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,0,0,0" />
+        </Grid>
+
+        <Grid HorizontalAlignment="Center" Height="45" Margin="0,10,0,0" VerticalAlignment="Top" Width="600" >
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.83*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="0.6*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.3*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Product:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="17,0,0,0"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" x:Name ="productComboBox" HorizontalAlignment="Left" Height="26" Margin="0,0,0,0" Padding="4 2 0 0" VerticalAlignment="Top" Width="222"/>
+            <Border x:Name="productComboBoxBorder" Grid.Row="0" Grid.Column="1" BorderBrush="Red" BorderThickness="0" Width="222" HorizontalAlignment="Left" >
+            </Border>
+
+            <TextBlock Grid.Row="0" Grid.Column="2"  Text="Amount: " HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,0,3" Padding="2 2 0 0"/>
+            <TextBox Grid.Row="0" Grid.Column="3"  x:Name ="amountTextBox" HorizontalAlignment="Left" Height="23" Margin="0,0,0,0" Padding="0 2 0 0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60"/>
+            <Button Grid.Row="0" Grid.Column="4" Content="Add" Margin="20 0 41 4 " Click="AddProductButton_OnClick"></Button>
+
+            <TextBlock x:Name="productErrorTextBlock"  Grid.Column="1" Grid.Row="1" Foreground="Red" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0 0 0 0"/>
+            <TextBlock  Grid.Row="1" Grid.Column="3" x:Name="amountErrorTextBlock" Foreground="Red" Margin="1 -2 0 0"></TextBlock>
+        </Grid>
+
+        <Grid x:Name="basketGrid" Margin="0 10 0 0 ">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" Text="Basket:" FontSize="18" FontWeight="Bold" Margin="-120 0 0 0"></TextBlock>
+            <Button Grid.Column="1" Grid.Row="0" Content="Clear basket" Width="70" Height="20" HorizontalAlignment="Center" Margin="0 0 -110 0" Click="ClearBasket_OnClick"/>
+            <ListBox x:Name="productsListBox" Grid.Column="1" Grid.Row="1" Height="100" Width="200"  Margin="0,0,-2,0">
+
+            </ListBox>
         </Grid>
 
         <Grid x:Name ="responseGrid"  HorizontalAlignment="Center" Height="43" Margin="-23,10,-23,0" VerticalAlignment="Top" Width="350" >

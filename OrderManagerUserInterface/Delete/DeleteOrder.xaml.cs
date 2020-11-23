@@ -34,7 +34,6 @@ namespace OrderManagerUserInterface.Delete
         private void DeleteOrderButton_OnClick(object sender, RoutedEventArgs e)
         {
             var deleteIndex = orderNumberComboBox.SelectedIndex;
-            MessageBox.Show(deleteIndex.ToString());
             responseGrid.Children.Clear();
 
             if (deleteIndex == -1)

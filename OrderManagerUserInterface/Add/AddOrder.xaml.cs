@@ -39,7 +39,6 @@ namespace OrderManagerUserInterface.Add
             foreach (var customer in customers)
             {
                 customerComboBox.Items.Add(customer.FullName);
-
             }
 
             foreach (var employee in employees)
@@ -47,7 +46,7 @@ namespace OrderManagerUserInterface.Add
                 employeeComboBox.Items.Add(employee.FullName);
             }
 
-            foreach (var product in applicationManager.getProducts())
+            foreach (var product in products)
             {
                 productComboBox.Items.Add(product.Name);
             }

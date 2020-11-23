@@ -28,11 +28,11 @@ namespace OrderManagerUserInterface.Show
 
         private void PrintInformation()
         {
-            if (customers.Count == 0)
+            if (customers.Count == 0 || customers == null)
             {
                 Label label = new Label();
                 label.Content = "No customers added yet!";
-                label.FontSize = 50;
+                label.FontSize = 30;
                 label.HorizontalAlignment = HorizontalAlignment.Center;
                 myStackPanel.Children.Add(label);
             }

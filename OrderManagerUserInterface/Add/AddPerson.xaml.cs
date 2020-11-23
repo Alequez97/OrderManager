@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -62,9 +63,16 @@ namespace OrderManagerUserInterface
                 emailTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                 inputIsEmpty = true;
             }
+            if (!new Regex(@"^[0-9]{6}-[0-9]{5}\z").IsMatch(personalCode))
+            {
+                personalCodeLabel.Text = "Personal code must contain numbers\nand match pattern xxxxxx-xxxxx";
+                personalCodeLabel.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                personalCodeTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                inputIsEmpty = true;
+            }
             if (personalCode.Equals(""))
             {
-                personalCodeLabel.Content = "Personal code field is required";
+                personalCodeLabel.Text = "Personal code field is required";
                 personalCodeLabel.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                 personalCodeTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                 inputIsEmpty = true;
@@ -127,7 +135,7 @@ namespace OrderManagerUserInterface
             nameLabel.Content = "";
             surnameLabel.Content = "";
             emailLabel.Content = "";
-            personalCodeLabel.Content = "";
+            personalCodeLabel.Text = "";
         }
 
         private void EmptyTextBoxes()

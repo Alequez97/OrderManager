@@ -38,14 +38,12 @@ namespace OrderManagerUserInterface.Edit
                 nameTextBox.Text = person.Name;
                 surnameTextBox.Text = person.Surname;
                 emailTextBox.Text = person.Email;
-                personalCodeTextBox.Text = person.PersonalCode;
             }
             else
             {
                 nameTextBox.Text = "";
                 surnameTextBox.Text = "";
                 emailTextBox.Text = "";
-                personalCodeTextBox.Text = "";
             }
 
             responseGrid.Children.Clear();
@@ -66,7 +64,6 @@ namespace OrderManagerUserInterface.Edit
             var name = nameTextBox.Text.Trim();
             var surname = surnameTextBox.Text.Trim();
             var email = emailTextBox.Text.Trim();
-            var personalCode = personalCodeTextBox.Text.Trim();
             var oldPersonalCode = persons[personComboBox.SelectedIndex].PersonalCode;
             var selectedIndex = personComboBox.SelectedIndex;
 
@@ -94,13 +91,6 @@ namespace OrderManagerUserInterface.Edit
                 emailTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
                 inputIsEmpty = true;
             }
-            if (personalCode.Equals(""))
-            {
-                personalCodeLabel.Content = "Personal code field is required";
-                personalCodeLabel.Foreground = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                personalCodeTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                inputIsEmpty = true;
-            }
 
             if (inputIsEmpty) return;
 
@@ -108,11 +98,11 @@ namespace OrderManagerUserInterface.Edit
 
             if (person is Employee)
             {
-                response = applicationManager.EditEmployee(name, surname, email, personalCode, oldPersonalCode, selectedIndex); //method return dictionary with response code and message
+                response = applicationManager.EditEmployee(name, surname, email, oldPersonalCode, selectedIndex); //method return dictionary with response code and message
             }
             else
             {
-                response = applicationManager.EditCustomer(name, surname, email, personalCode, oldPersonalCode, selectedIndex);
+                response = applicationManager.EditCustomer(name, surname, email, oldPersonalCode, selectedIndex);
             }
 
             //1 - success, 0 - error, -1 - warning
@@ -151,14 +141,12 @@ namespace OrderManagerUserInterface.Edit
             nameLabel.Content = "";
             surnameLabel.Content = "";
             emailLabel.Content = "";
-            personalCodeLabel.Content = "";
         }
 
         private void RestoreTextBoxTextsToDefault()
         {
             nameTextBox.Text = "";
             surnameTextBox.Text = "";
-            personalCodeTextBox.Text = "";
             emailTextBox.Text = "";
 
         }
@@ -168,7 +156,6 @@ namespace OrderManagerUserInterface.Edit
             nameTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
             surnameTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
             emailTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
-            personalCodeTextBox.BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200));
             personComboBoxBorder.BorderThickness = new Thickness(0, 0, 0, 0);
         }
 
@@ -183,7 +170,7 @@ namespace OrderManagerUserInterface.Edit
                 foreach (var employee in applicationManager.getEmployees())
                 {
                     persons.Add(employee);
-                    personComboBox.Items.Add(employee.FullName);
+                    personComboBox.Items.Add(employee.FullName + " (" + employee.PersonalCode + ")");
                 }
             }
             else
@@ -192,7 +179,7 @@ namespace OrderManagerUserInterface.Edit
                 foreach (var customer in applicationManager.getCustomers())
                 {
                     persons.Add(customer);
-                    personComboBox.Items.Add(customer.FullName);
+                    personComboBox.Items.Add(customer.FullName + " (" + customer.PersonalCode + ")");
                 }
             }
 

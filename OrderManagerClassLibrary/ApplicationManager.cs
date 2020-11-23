@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net.Mail;
@@ -197,13 +198,13 @@ namespace OrderManagerClassLibrary
                 var response = new Dictionary<int, string> { { 1, "Order successfully created" } };
                 return response;
             }
-            catch (Exception e)
+            catch
             {
                 var response = new Dictionary<int, string> { { 0, "Order can't be added. Try again later" } };
                 return response;
             }
 
-            
+
         }
 
         public Dictionary<int, string> AddProduct(string productName, decimal price)
@@ -274,7 +275,7 @@ namespace OrderManagerClassLibrary
             return orderDetails;
         }
 
-        public Dictionary<int, string> EditCustomer(string newName, string newSurname, string newEmail, string newPersonalCode, string oldPersonalCode, int indexInCollection)
+        public Dictionary<int, string> EditCustomer(string newName, string newSurname, string newEmail, string oldPersonalCode, int indexInCollection)
         {
 
             if (!IsValidEmail(newEmail))
@@ -286,25 +287,14 @@ namespace OrderManagerClassLibrary
             var customer = customers.ElementAt(indexInCollection);
 
             if (customer.Name.Equals(newName) && customer.Surname.Equals(newSurname) &&
-                customer.Email.Equals(newEmail) && customer.PersonalCode.Equals(newPersonalCode))
+                customer.Email.Equals(newEmail))
             {
                 return new Dictionary<int, string> { { -1, "No found changes to make" } };
-            }
-
-            int controlIndex = 0;
-            foreach (Customer c in getCustomers())        //check if collection of employees contains object 
-            {                                               //with user typed personal code
-                if (controlIndex != indexInCollection)
-                {
-                    if (c.PersonalCode.Equals(newPersonalCode)) return new Dictionary<int, string> { { 0, "Error, customer with this personal code exists" } };
-                }
-                controlIndex++;
             }
 
             customers[indexInCollection].Name = newName;
             customers[indexInCollection].Surname = newSurname;
             customers[indexInCollection].Email = newEmail;
-            customers[indexInCollection].PersonalCode = newPersonalCode;
 
             int orderIndex = 0;
             var orders = getOrders();
@@ -315,7 +305,6 @@ namespace OrderManagerClassLibrary
                     orders[orderIndex].Customer.Name = newName;
                     orders[orderIndex].Customer.Surname = newSurname;
                     orders[orderIndex].Customer.Email = newEmail;
-                    orders[orderIndex].Customer.PersonalCode = newPersonalCode;
                 }
 
                 orderIndex++;
@@ -332,7 +321,7 @@ namespace OrderManagerClassLibrary
             }
 
         }
-        public Dictionary<int, string> EditEmployee(string newName, string newSurname, string newEmail, string newPersonalCode, string oldPersonalCode, int indexInCollection)
+        public Dictionary<int, string> EditEmployee(string newName, string newSurname, string newEmail, string oldPersonalCode, int indexInCollection)
         {
             if (!IsValidEmail(newEmail))
             {
@@ -343,25 +332,14 @@ namespace OrderManagerClassLibrary
             var employee = employees.ElementAt(indexInCollection);
 
             if (employee.Name.Equals(newName) && employee.Surname.Equals(newSurname) &&
-                employee.Email.Equals(newEmail) && employee.PersonalCode.Equals(newPersonalCode))
+                employee.Email.Equals(newEmail))
             {
                 return new Dictionary<int, string> { { -1, "No found changes to make" } };
-            }
-
-            int controlIndex = 0;
-            foreach (Employee e in getEmployees())        //check if collection of employees contains object 
-            {                                               //with user typed personal code
-                if (controlIndex != indexInCollection)
-                {
-                    if (e.PersonalCode.Equals(newPersonalCode)) return new Dictionary<int, string> { { 0, "Error, employee with this personal code exists" } };
-                }
-                controlIndex++;
             }
 
             employees[indexInCollection].Name = newName;
             employees[indexInCollection].Surname = newSurname;
             employees[indexInCollection].Email = newEmail;
-            employees[indexInCollection].PersonalCode = newPersonalCode;
 
             int orderIndex = 0;
             var orders = getOrders();
@@ -372,7 +350,6 @@ namespace OrderManagerClassLibrary
                     orders[orderIndex].ResponsibleEmployee.Name = newName;
                     orders[orderIndex].ResponsibleEmployee.Surname = newSurname;
                     orders[orderIndex].ResponsibleEmployee.Email = newEmail;
-                    orders[orderIndex].ResponsibleEmployee.PersonalCode = newPersonalCode;
                 }
 
                 orderIndex++;
@@ -419,25 +396,52 @@ namespace OrderManagerClassLibrary
             }
         }
 
-        public Dictionary<int, string> EditOrder(Employee newEmployee, StateEnum newState, int editOrderIndex)
+        public Dictionary<int, string> EditOrder(Employee newEmployee, StateEnum newState, Dictionary<Product, int> orderBasket, Order order)
         {
-            var orders = getOrders();
-            orders[editOrderIndex].ResponsibleEmployee = newEmployee;
-            orders[editOrderIndex].State = newState;
-            return new Dictionary<int, string> { { 1, "Order successfully edited" } };
+            order.ResponsibleEmployee = newEmployee;
+            order.State = newState;
+            order.OrderDetails.Clear();
+            foreach (var item in orderBasket)
+            {
+                order.OrderDetails.Add(new OrderDetail() { Product = item.Key, Amount = item.Value });
+            }
+
+            try
+            {
+                context.SaveChanges();
+                context.Database.ExecuteSqlCommand("delete from OrderDetails where Order_Number is NULL");
+                return new Dictionary<int, string> { { 1, "Order successfully edited" } };
+            }
+            catch
+            {
+                return new Dictionary<int, string> { { 1, "Wasn't able to edit order. Try again later" } };
+            }
         }
 
         public Dictionary<int, string> DeleteEmployee(Employee employee)
         {
             try
             {
+                var ordersList = context.Orders
+                    .SqlQuery("Select * from Orders where ResponsibleEmployee_PersonalCode = \'" + employee.PersonalCode + "\'").ToList<Order>();
+                if (ordersList.Count > 0)
+                {
+                    return new Dictionary<int, string>
+                    {
+                        { 0, $"Unable to delete\n" +
+                             $"This employee appends in {ordersList.Count} orders\n" +
+                             $"Firstly delete this orders, than you'll can delete\n" +
+                             $"this employee" }
+                    };
+                }
                 context.Employees.Remove(employee);
                 context.SaveChanges();
                 return new Dictionary<int, string> { { 1, "Employee deleted" } };
             }
-            catch
+            catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, "Unable to delete employee" } };
+                return new Dictionary<int, string> { { 0, $"Unable to delete employee\n" +
+                                                          $"Try again later" }};
             }
         }
 
@@ -445,13 +449,26 @@ namespace OrderManagerClassLibrary
         {
             try
             {
+                var ordersList = context.Orders
+                   .SqlQuery("Select * from Orders where Customer_PersonalCode = \'" + customer.PersonalCode + "\'").ToList<Order>();
+                if (ordersList.Count > 0)
+                {
+                    return new Dictionary<int, string>
+                    {
+                        { 0, $"Unable to delete\n" +
+                             $"This customer appends in {ordersList.Count} orders\n " +
+                             $"Firstly delete this orders, than you'll can delete\n" +
+                             $"this customer" }
+                    };
+                }
                 context.Customers.Remove(customer);
                 context.SaveChanges();
                 return new Dictionary<int, string> { { 1, "Customer deleted" } };
             }
-            catch
+            catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, "Unable to delete customer" } };
+                return new Dictionary<int, string> { { 0, $"Unable to delete customer\n" +
+                                                          $"Try again later" } };
             }
         }
 
@@ -459,13 +476,26 @@ namespace OrderManagerClassLibrary
         {
             try
             {
+                var detailsList = context.OrderDetails
+                    .SqlQuery("Select * from OrderDetails where Product_Id = " + product.Id).ToList<OrderDetail>();
+                if (detailsList.Count > 0)
+                {
+                    return new Dictionary<int, string>
+                    {
+                        { 0, $"Unable to delete\n" +
+                             $"This product appends in {detailsList.Count} orders\n " +
+                             $"Firstly delete this orders, than you'll can remove\n" +
+                             $"this product" }
+                    };
+                }
                 context.Products.Remove(product);
                 context.SaveChanges();
                 return new Dictionary<int, string> { { 1, "Product deleted" } };
             }
-            catch
+            catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, "Unable to delete product" } };
+                return new Dictionary<int, string> { { 0, $"Unable to delete product\n" +
+                                                          $"Try again later" } };
             }
         }
 
@@ -475,15 +505,17 @@ namespace OrderManagerClassLibrary
             {
                 context.Orders.Remove(order);
                 context.SaveChanges();
+                context.Database.ExecuteSqlCommand("delete from OrderDetails where Order_Number is NULL");
                 return new Dictionary<int, string> { { 1, "Order deleted" } };
             }
-            catch
+            catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, "Unable to delete order" } };
+                return new Dictionary<int, string> { { 0, $"Unable to delete order\n" +
+                                                          $"Try again later" } };
             }
         }
 
-        bool IsValidEmail(string email) //https://stackoverflow.com/questions/1365407/c-sharp-code-to-validate-email-address
+        bool IsValidEmail(string email)             //https://stackoverflow.com/questions/1365407/c-sharp-code-to-validate-email-address
         {
             try
             {
