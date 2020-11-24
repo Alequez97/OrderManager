@@ -423,7 +423,7 @@ namespace OrderManagerClassLibrary
             try
             {
                 var ordersList = context.Orders
-                    .SqlQuery("Select * from Orders where ResponsibleEmployee_PersonalCode = \'" + employee.PersonalCode + "\'").ToList<Order>();
+                .SqlQuery("Select * from Orders where ResponsibleEmployee_PersonalCode = \'" + employee.PersonalCode + "\'").ToList<Order>();
                 if (ordersList.Count > 0)
                 {
                     return new Dictionary<int, string>
@@ -450,7 +450,7 @@ namespace OrderManagerClassLibrary
             try
             {
                 var ordersList = context.Orders
-                   .SqlQuery("Select * from Orders where Customer_PersonalCode = \'" + customer.PersonalCode + "\'").ToList<Order>();
+               .SqlQuery("Select * from Orders where Customer_PersonalCode = \'" + customer.PersonalCode + "\'").ToList<Order>();
                 if (ordersList.Count > 0)
                 {
                     return new Dictionary<int, string>
@@ -477,7 +477,7 @@ namespace OrderManagerClassLibrary
             try
             {
                 var detailsList = context.OrderDetails
-                    .SqlQuery("Select * from OrderDetails where Product_Id = " + product.Id).ToList<OrderDetail>();
+                .SqlQuery("Select * from OrderDetails where Product_Id = " + product.Id).ToList<OrderDetail>();
                 if (detailsList.Count > 0)
                 {
                     return new Dictionary<int, string>
