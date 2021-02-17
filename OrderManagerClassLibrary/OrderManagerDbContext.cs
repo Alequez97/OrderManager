@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using OrderManagerClassLibrary.Models;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace OrderManagerClassLibrary

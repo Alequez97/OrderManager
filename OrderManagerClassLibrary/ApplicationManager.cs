@@ -5,9 +5,14 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net.Mail;
 using OrderManagerClassLibrary.Interfaces;
+using OrderManagerClassLibrary.Models;
 
 namespace OrderManagerClassLibrary
 {
+
+    /// <summary>
+    /// Class that holds CRUD operations in app
+    /// </summary>
     public class ApplicationManager : IApplicationManager
     {
         private static ApplicationManager applicationManager;
@@ -45,7 +50,6 @@ namespace OrderManagerClassLibrary
         {
             get
             {
-
                 var products = context.Products.Select(x => x).ToList();
                 return products;
             }
@@ -131,7 +135,7 @@ namespace OrderManagerClassLibrary
 
             bool contains = false;
             foreach (Employee employee in getEmployees())        //check if collection of employees contains object 
-            {                                               //with user typed personal code
+            {                                                    //with user typed personal code
                 if (employee.PersonalCode.Equals(personalCode)) contains = true;
             }
 
@@ -280,7 +284,7 @@ namespace OrderManagerClassLibrary
 
             if (!IsValidEmail(newEmail))
             {
-                return new Dictionary<int, string> { { 0, "Error. Wrong e-mail format" } };
+                return new Dictionary<int, string> { { 0, "Error. Wrong e-mail format" } };     //dictionary with response code and response message
             }
 
             var customers = getCustomers();
@@ -289,7 +293,7 @@ namespace OrderManagerClassLibrary
             if (customer.Name.Equals(newName) && customer.Surname.Equals(newSurname) &&
                 customer.Email.Equals(newEmail))
             {
-                return new Dictionary<int, string> { { -1, "No found changes to make" } };
+                return new Dictionary<int, string> { { -1, "No found changes to make" } };      //dictionary with response code and response message
             }
 
             customers[indexInCollection].Name = newName;
@@ -313,11 +317,11 @@ namespace OrderManagerClassLibrary
             try
             {
                 context.SaveChanges();
-                return new Dictionary<int, string>() { { 1, "Customer was successfully modified" } };
+                return new Dictionary<int, string>() { { 1, "Customer was successfully modified" } };       //dictionary with response code and response message
             }
             catch (Exception)
             {
-                return new Dictionary<int, string> { { 0, "Unable to edit customer. Try again later" } };
+                return new Dictionary<int, string> { { 0, "Unable to edit customer. Try again later" } };       //dictionary with response code and response message
             }
 
         }
@@ -325,7 +329,7 @@ namespace OrderManagerClassLibrary
         {
             if (!IsValidEmail(newEmail))
             {
-                return new Dictionary<int, string> { { 0, "Error. Wrong e-mail format" } };
+                return new Dictionary<int, string> { { 0, "Error. Wrong e-mail format" } };     //dictionary with response code and response message
             }
 
             var employees = getEmployees();
@@ -334,7 +338,7 @@ namespace OrderManagerClassLibrary
             if (employee.Name.Equals(newName) && employee.Surname.Equals(newSurname) &&
                 employee.Email.Equals(newEmail))
             {
-                return new Dictionary<int, string> { { -1, "No found changes to make" } };
+                return new Dictionary<int, string> { { -1, "No found changes to make" } };      //dictionary with response code and response message
             }
 
             employees[indexInCollection].Name = newName;
@@ -357,11 +361,11 @@ namespace OrderManagerClassLibrary
             try
             {
                 context.SaveChanges();
-                return new Dictionary<int, string>() { { 1, "Employee was successfully modified" } };
+                return new Dictionary<int, string>() { { 1, "Employee was successfully modified" } };       //dictionary with response code and response message
             }
             catch (Exception)
             {
-                return new Dictionary<int, string> { { 0, "Unable to edit employee. Try again later" } };
+                return new Dictionary<int, string> { { 0, "Unable to edit employee. Try again later" } };       //dictionary with response code and response message
             }
 
         }
@@ -375,12 +379,12 @@ namespace OrderManagerClassLibrary
             {
                 if (controlIndex != index)
                 {
-                    if (product.Name.ToLower().Equals(newName.ToLower())) return new Dictionary<int, string> { { 0, $"Product {newName} already exists" } };
+                    if (product.Name.ToLower().Equals(newName.ToLower())) return new Dictionary<int, string> { { 0, $"Product {newName} already exists" } };        //dictionary with response code and response message
                 }
                 controlIndex++;
             }
 
-            if (products[index].Name.Equals(newName) && products[index].Price == newPrice) return new Dictionary<int, string> { { -1, "No changes made" } };
+            if (products[index].Name.Equals(newName) && products[index].Price == newPrice) return new Dictionary<int, string> { { -1, "No changes made" } };        //dictionary with response code and response message
 
             products[index].Name = newName;
             products[index].Price = newPrice;
@@ -388,11 +392,11 @@ namespace OrderManagerClassLibrary
             try
             {
                 context.SaveChanges();
-                return new Dictionary<int, string> { { 1, "Product successfully edited" } };
+                return new Dictionary<int, string> { { 1, "Product successfully edited" } };        //dictionary with response code and response message
             }
             catch (Exception)
             {
-                return new Dictionary<int, string> { { 0, "Unable to edit product. Try again later" } };
+                return new Dictionary<int, string> { { 0, "Unable to edit product. Try again later" } };        //dictionary with response code and response message
             }
         }
 
@@ -409,12 +413,12 @@ namespace OrderManagerClassLibrary
             try
             {
                 context.SaveChanges();
-                context.Database.ExecuteSqlCommand("delete from OrderDetails where Order_Number is NULL");
-                return new Dictionary<int, string> { { 1, "Order successfully edited" } };
+                context.Database.ExecuteSqlCommand("delete from OrderDetails where Order_Number is NULL");      //Clear order details which not relate with any order
+                return new Dictionary<int, string> { { 1, "Order successfully edited" } };      //dictionary with response code and response message
             }
             catch
             {
-                return new Dictionary<int, string> { { 1, "Wasn't able to edit order. Try again later" } };
+                return new Dictionary<int, string> { { 1, "Wasn't able to edit order. Try again later" } };     //dictionary with response code and response message
             }
         }
 
@@ -426,7 +430,7 @@ namespace OrderManagerClassLibrary
                 .SqlQuery("Select * from Orders where ResponsibleEmployee_PersonalCode = \'" + employee.PersonalCode + "\'").ToList<Order>();
                 if (ordersList.Count > 0)
                 {
-                    return new Dictionary<int, string>
+                    return new Dictionary<int, string>      // dictionary with response code and response message
                     {
                         { 0, $"Unable to delete\n" +
                              $"This employee appends in {ordersList.Count} orders\n" +
@@ -436,11 +440,11 @@ namespace OrderManagerClassLibrary
                 }
                 context.Employees.Remove(employee);
                 context.SaveChanges();
-                return new Dictionary<int, string> { { 1, "Employee deleted" } };
+                return new Dictionary<int, string> { { 1, "Employee deleted" } };           // dictionary with response code and response message
             }
             catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, $"Unable to delete employee\n" +
+                return new Dictionary<int, string> { { 0, $"Unable to delete employee\n" +      // dictionary with response code and response message
                                                           $"Try again later" }};
             }
         }
@@ -453,7 +457,7 @@ namespace OrderManagerClassLibrary
                .SqlQuery("Select * from Orders where Customer_PersonalCode = \'" + customer.PersonalCode + "\'").ToList<Order>();
                 if (ordersList.Count > 0)
                 {
-                    return new Dictionary<int, string>
+                    return new Dictionary<int, string>          // dictionary with response code and response message
                     {
                         { 0, $"Unable to delete\n" +
                              $"This customer appends in {ordersList.Count} orders\n " +
@@ -463,12 +467,12 @@ namespace OrderManagerClassLibrary
                 }
                 context.Customers.Remove(customer);
                 context.SaveChanges();
-                return new Dictionary<int, string> { { 1, "Customer deleted" } };
+                return new Dictionary<int, string> { { 1, "Customer deleted" } };           // dictionary with response code and response message
             }
             catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, $"Unable to delete customer\n" +
-                                                          $"Try again later" } };
+                return new Dictionary<int, string> { { 0, $"Unable to delete customer\n" +          // dictionary with response code and response message
+                                                          $"Try again later" } };   
             }
         }
 
@@ -480,7 +484,7 @@ namespace OrderManagerClassLibrary
                 .SqlQuery("Select * from OrderDetails where Product_Id = " + product.Id).ToList<OrderDetail>();
                 if (detailsList.Count > 0)
                 {
-                    return new Dictionary<int, string>
+                    return new Dictionary<int, string>          // dictionary with response code and response message
                     {
                         { 0, $"Unable to delete\n" +
                              $"This product appends in {detailsList.Count} orders\n " +
@@ -490,11 +494,11 @@ namespace OrderManagerClassLibrary
                 }
                 context.Products.Remove(product);
                 context.SaveChanges();
-                return new Dictionary<int, string> { { 1, "Product deleted" } };
-            }
+                return new Dictionary<int, string> { { 1, "Product deleted" } };            // dictionary with response code and response message
+            }       
             catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, $"Unable to delete product\n" +
+                return new Dictionary<int, string> { { 0, $"Unable to delete product\n" +           // dictionary with response code and response message
                                                           $"Try again later" } };
             }
         }
@@ -505,12 +509,12 @@ namespace OrderManagerClassLibrary
             {
                 context.Orders.Remove(order);
                 context.SaveChanges();
-                context.Database.ExecuteSqlCommand("delete from OrderDetails where Order_Number is NULL");
-                return new Dictionary<int, string> { { 1, "Order deleted" } };
+                context.Database.ExecuteSqlCommand("delete from OrderDetails where Order_Number is NULL");      //Clear order details which not relate with any order
+                return new Dictionary<int, string> { { 1, "Order deleted" } };          // dictionary with response code and response message
             }
             catch (Exception e)
             {
-                return new Dictionary<int, string> { { 0, $"Unable to delete order\n" +
+                return new Dictionary<int, string> { { 0, $"Unable to delete order\n" +         // dictionary with response code and response message
                                                           $"Try again later" } };
             }
         }
@@ -519,7 +523,7 @@ namespace OrderManagerClassLibrary
         {
             try
             {
-                var addr = new System.Net.Mail.MailAddress(email);
+                var addr = new MailAddress(email);
                 return addr.Address == email;
             }
             catch

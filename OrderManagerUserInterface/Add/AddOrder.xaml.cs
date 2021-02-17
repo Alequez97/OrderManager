@@ -52,13 +52,14 @@ namespace OrderManagerUserInterface.Add
             }
         }
 
-        private void AddOrderButton_OnClick(object sender, RoutedEventArgs e)
+        private void AddOrderButton_OnClick(object sender, RoutedEventArgs e)       //order adding button
         {
             var chosenCustomerIndex = customerComboBox.Items.IndexOf(customerComboBox.SelectedItem);
             var chosenEmployeeIndex = employeeComboBox.Items.IndexOf(employeeComboBox.SelectedItem);
 
             ResetErrorSections();
 
+            //input error section
             bool isFailed = false;
             if (chosenCustomerIndex == -1)
             {
@@ -82,6 +83,8 @@ namespace OrderManagerUserInterface.Add
             }
 
             if (isFailed) return;
+            //end checking for input errors
+
             var response = applicationManager.AddOrder(customers[chosenCustomerIndex], employees[chosenEmployeeIndex], orderBasket);
 
             Label label = new Label();
@@ -91,7 +94,7 @@ namespace OrderManagerUserInterface.Add
             label.Foreground = new SolidColorBrush(Color.FromRgb(0, 140, 0));
         }
 
-        private void AddProductButton_OnClick(object sender, RoutedEventArgs e)
+        private void AddProductButton_OnClick(object sender, RoutedEventArgs e)     //product adding button
         {
             productsListBox.Items.Clear();
             productErrorTextBlock.Text = "";
@@ -105,8 +108,9 @@ namespace OrderManagerUserInterface.Add
 
             bool isFailed = false;
 
-            if (productIndex == -1)
-            {
+            //input error section
+            if (productIndex == -1)         //-1 means that combobox item is not selected
+            {   
                 productErrorTextBlock.Text = "Error. Choose product";
                 productComboBoxBorder.BorderThickness = new Thickness(1, 1, 1, 1);
                 isFailed = true;

@@ -51,6 +51,7 @@ namespace OrderManagerUserInterface.Edit
             SetDefaultBackgroundForTextBoxes();
             responseGrid.Children.Clear();
 
+            //input check
             if (selectedIndex == -1)
             {
                 productComboBoxBorder.BorderThickness = new Thickness(1, 1, 1, 1);
@@ -81,6 +82,7 @@ namespace OrderManagerUserInterface.Edit
             }
 
             if (inputFail) return;
+            //end of input check
 
             Dictionary<int, string> response = applicationManager.EditProduct(name, price, selectedIndex);
             var responseCode = response.Keys.ElementAt(0);
@@ -112,7 +114,6 @@ namespace OrderManagerUserInterface.Edit
             {
                 SetTextBoxesEmpty();
                 FillComboBox();
-                //MessageBox.Show("Product was successfully edited!");
             }
 
         }

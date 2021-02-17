@@ -71,7 +71,7 @@ namespace OrderManagerUserInterface.Edit
             employeeComboBox.SelectedIndex = responsibleEmployeeIndex;
             stateComboBox.SelectedItem = _orders[selectedIndex].State;
 
-            FillOrderBasketDictionary(_orders[selectedIndex]);
+            FillOrderBasketDictionary(_orders[selectedIndex]);      //order products are stored in dictionary <Product, amount>
             FillOrderBasket();
         }
 
